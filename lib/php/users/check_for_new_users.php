@@ -10,24 +10,16 @@ $q->execute();
 
 $count = $q->rowCount();
 
-if ($_SESSION['permissions']['activate_users']  == "1")
-{
+if ($_SESSION['permissions']['activate_users'] == "1") {
 
-	if ($count > 0)
-		{
-			$result = array('new_user' => true,'number' => $count);
-			echo json_encode($result);
-		}
-	else
-		{
-			$result = array('new_user' => false,'number' => '0');
-			echo json_encode($result);
-		}
-}
-
-else
-
-{
-		$result = array('new_user' => false,'number' => '0');
-		echo json_encode($result);
+    if ($count > 0) {
+        $result = ['new_user' => true, 'number' => $count];
+        echo json_encode($result);
+    } else {
+        $result = ['new_user' => false, 'number' => '0'];
+        echo json_encode($result);
+    }
+} else {
+    $result = ['new_user' => false, 'number' => '0'];
+    echo json_encode($result);
 }

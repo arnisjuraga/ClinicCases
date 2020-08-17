@@ -17,10 +17,10 @@ if (isset($_REQUEST['case_id'])) {
 if (isset($_GET['start'])) {
     $start = $_GET['start'];
 } else {
-    $start='0';
+    $start = '0';
 }
 
-if ($_SESSION['mobile']){ //temporary cop-out for implimenting inf scroll on mobile
+if ($_SESSION['mobile']) { //temporary cop-out for implimenting inf scroll on mobile
     $limit = '1000';
 } else {
     $limit = '20';
@@ -53,25 +53,27 @@ if (isset($search)) {
         and (cm_users.last_name LIKE '%$search%'  OR cm_users.first_name LIKE '%$search%'
         OR cm_case_notes.date LIKE '%$search%' OR cm_case_notes.description LIKE '%$search%') ORDER BY cm_case_notes.date DESC ";
     }
-} else if (isset($non_case)){
-	$sql = "SELECT cm_users.username,cm_users.first_name,cm_users.last_name,cm_users.picture_url, cm_case_notes.*
+} else {
+    if (isset($non_case)) {
+        $sql = "SELECT cm_users.username,cm_users.first_name,cm_users.last_name,cm_users.picture_url, cm_case_notes.*
     FROM cm_case_notes,cm_users WHERE  cm_case_notes.case_id = :id and cm_case_notes.username = cm_users.username
     and cm_case_notes.username = '$username' ORDER BY cm_case_notes.date DESC LIMIT $start, $limit";
-} else {
-	$sql = "SELECT cm_users.username,cm_users.first_name,cm_users.last_name,cm_users.picture_url, cm_case_notes.*
+    } else {
+        $sql = "SELECT cm_users.username,cm_users.first_name,cm_users.last_name,cm_users.picture_url, cm_case_notes.*
     FROM cm_case_notes,cm_users WHERE  cm_case_notes.case_id = :id and cm_case_notes.username = cm_users.username
     ORDER BY cm_case_notes.date DESC LIMIT $start, $limit";
+    }
 }
 
 $case_notes_query = $dbh->prepare($sql);
 
-$case_notes_query->bindParam(':id',$case_id);
+$case_notes_query->bindParam(':id', $case_id);
 
 $case_notes_query->execute();
 
 $case_notes_data = $case_notes_query->fetchAll(PDO::FETCH_ASSOC);
 
-if (!$_SESSION['mobile']){
+if (!$_SESSION['mobile']) {
     include('../../../html/templates/interior/cases_casenotes.php');
 }
 

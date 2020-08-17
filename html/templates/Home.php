@@ -1,207 +1,235 @@
 <!-- Jquery Calls Specific to this page -->
-	<script src="html/js/home.min.js" type="text/javascript"></script>
-	<script type="text/javascript" src="lib/javascripts/fullcalendar/fullcalendar.min.js"></script>
-	<script type="text/javascript" src="lib/javascripts/jQuery.download.js"></script>
-	<script type="text/javascript" src="lib/javascripts/timepicker/jquery-ui-timepicker-addon.js"></script>
-	<script type="text/javascript" src="lib/javascripts/chosen/chosen.jquery.min.js"></script>
+<script src="html/js/home.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="lib/javascripts/fullcalendar/fullcalendar.min.js"></script>
+<script type="text/javascript" src="lib/javascripts/jQuery.download.js"></script>
+<script type="text/javascript" src="lib/javascripts/timepicker/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="lib/javascripts/chosen/chosen.jquery.min.js"></script>
 
 <!-- Css specific to this page -->
-	<link rel="stylesheet" type="text/css" href="lib/javascripts/fullcalendar/fullcalendar.css" />
-	<link type="text/css" href="lib/javascripts/chosen/chosen.css" rel="stylesheet"/>
+<link rel="stylesheet" type="text/css" href="lib/javascripts/fullcalendar/fullcalendar.css"/>
+<link type="text/css" href="lib/javascripts/chosen/chosen.css" rel="stylesheet"/>
 
 </head>
 <body>
-    <div id="pdf-viewer">
-        <iframe src = ""  id="frme" allowfullscreen="true"></iframe>
+<div id="pdf-viewer">
+    <iframe src="" id="frme" allowfullscreen="true"></iframe>
+</div>
+
+<div id="notifications"></div>
+
+<?php include 'html/templates/interior/timer.php' ?>
+<?php include 'html/templates/interior/idletimeout.php' ?>
+
+<div id="nav_container">
+    <?php $t = tabs($dbh, $_GET['i']);
+    echo $t; ?>
+    <div id="menus">
+        <?php include 'html/templates/Menus.php'; ?>
+
     </div>
 
-	<div id="notifications"></div>
+</div>
 
-	<?php include 'html/templates/interior/timer.php' ?>
-	<?php include 'html/templates/interior/idletimeout.php' ?>
+<div id="content">
 
-	<div id = "nav_container">
-		<?php $t = tabs($dbh,$_GET['i']); echo $t; ?>
-		<div id="menus">
-			<?php include 'html/templates/Menus.php'; ?>
+    <div id="home_nav" data-key="<?php echo $_SESSION['private_key']; ?>">
 
-		</div>
+        <div id="home_data">
 
-	</div>
+            <div><?php echo $_SESSION['first_name'] . ' ' . $_SESSION['last_name']; ?></div>
 
-	<div id="content">
+            <?php
+            include 'lib/php/auth/last_login.php';
 
-		<div id = "home_nav" data-key = "<?php echo $_SESSION['private_key'];?>">
+            include 'lib/php/utilities/convert_times.php';
 
-			<div id = "home_data">
+            $last_log = extract_date_time(get_last_login($dbh, $_SESSION['login']));
 
-				<div><?php echo $_SESSION['first_name'] . ' ' . $_SESSION['last_name']; ?></div>
+            ?>
 
-				<?php
-					include 'lib/php/auth/last_login.php';
+            <div class="small"> Last login: <?php echo $last_log; ?> </div>
 
-					include 'lib/php/utilities/convert_times.php';
+        </div>
 
-					$last_log = extract_date_time(get_last_login($dbh,$_SESSION['login']));
+        <span class="home_nav_choices">
 
-				?>
+            <input type="radio" id="activity_button" name="radio" checked="checked"/>
+            <label for="activity_button">Activity</label>
 
-				<div class="small"> Last login: <?php echo $last_log; ?> </div>
+            <input type="radio" id="upcoming_button" name="radio"/>
+            <label for="upcoming_button">Upcoming</label>
 
-			</div>
+        </span>
 
-			<span class = "home_nav_choices">
+        <button id="quick_add">Quick Add</button>
 
-				<input type="radio" id="activity_button" name="radio" checked="checked" /><label for="activity_button">Activity</label>
+    </div>
 
-				<input type="radio" id="upcoming_button" name="radio" /><label for="upcoming_button">Upcoming</label>
+    <div id="home_panel" class="print_content">Loading ....</div>
 
-			</span>
 
-			<button id="quick_add">Quick Add</button>
+</div>
 
-		</div>
+<div id="quick_add_form">
 
-		<div id = "home_panel" class="print_content">Loading .... </div>
+    <div id="quick_add_nav">
 
+        <a href="#" class="active toggle">Case Note</a>
+        |
 
-	</div>
+        <a href="#" class="toggle">Event</a>
 
-	<div id = "quick_add_form">
+        <a class="quick_add_close" href="#"><img src='html/ico/cross.png' border=0 title="Close"></a>
 
-		<div id="quick_add_nav">
+    </div>
 
-			<a href="#" class="active toggle">Case Note</a> |
+    <div id="quick_add_body">
 
-			<a href="#" class="toggle">Event</a>
+        <div id="quick_add_body_cn" class="toggle_form">
 
-			<a class="quick_add_close" href="#"><img src='html/ico/cross.png' border=0 title="Close"></a>
+            <form name="quick_cn">
 
-		</div>
+                <p class="error"></p>
 
-		<div id="quick_add_body">
+                <p>
+                    <label>Date</label>
+                    <input type="text" name="csenote_date" id="cn_date">
+                </p>
 
-				<div id = "quick_add_body_cn" class="toggle_form">
+                <p>
+                    <label>Case</label>
 
-					<form name="quick_cn">
+                    <select name="csenote_case_id" id="cn_case" style="width:230px;">
+                        <!-- Note Chosen seems to require the inline style width -->
+                        <option value="NC">Non-Case Time</option>
 
-						<p class="error"></p>
+                        <?php
+                        include('lib/php/utilities/names.php');
 
-						<p><label>Date</label><input type="text" name="csenote_date" id="cn_date"></p>
+                        include('lib/php/html/gen_select.php');
 
-						<p><label>Case</label>
+                        $options = generate_active_cases_select($dbh, $_SESSION['login']);
 
-							<select name="csenote_case_id" id="cn_case" style="width:230px;" >
-							<!-- Note Chosen seems to require the inline style width -->
-								<option value="NC">Non-Case Time</option>
+                        echo $options;
 
-								<?php
-								include('lib/php/utilities/names.php');
+                        ?>
 
-								include('lib/php/html/gen_select.php');
 
-								$options = generate_active_cases_select($dbh,$_SESSION['login']);
+                    </select>
 
-								echo $options;
+                </p>
 
-							?>
+                <p class="quick_add_times">
 
+                    <?php $selector = generate_time_selector();
+                    echo $selector; ?>
 
-							</select>
+                </p>
 
-						</p>
+                <p>
+                    <label>Description</label>
+                    <br/>
 
-						<p class="quick_add_times">
+                    <textarea name="csenote_description"></textarea>
 
-							<?php $selector = generate_time_selector(); echo $selector; ?>
+                </p>
 
-						</p>
+                <input type="hidden" name="query_type" value="add">
 
-						<p>
-							<label>Description</label><br />
+                <input type="hidden" name="csenote_user" value="<?php echo $_SESSION['login']; ?>">
 
-							<textarea name="csenote_description"></textarea>
+                <p id="quick_add_cn">
 
-						</p>
+                    <button id="quick_add_cn_submit">Add</button>
 
-						<input type="hidden" name="query_type" value="add">
+                </p>
 
-						<input type="hidden" name="csenote_user" value="<?php echo $_SESSION['login'];?>">
+            </form>
 
-						<p id = "quick_add_cn">
+        </div>
 
-							<button id="quick_add_cn_submit">Add</button>
+        <div id="quick_add_body_event" class="toggle_form">
 
-						</p>
+            <form name="quick_event">
 
-					</form>
+                <p class="error"></p>
 
-				</div>
+                <p>
+                    <label>What:</label>
+                    <input type="text" name="task">
+                </p>
 
-				<div id = "quick_add_body_event" class="toggle_form">
+                <p>
+                    <label>Where:</label>
+                    <input type="text" name="where">
+                </p>
 
-					<form name = "quick_event">
+                <p>
+                    <label>Start:</label>
+                    <input type="text" id="ev_start" name="start">
+                </p>
 
-						<p class="error"></p>
+                <p>
+                    <label>End:</label>
+                    <input type="text" id="ev_end" name="end">
+                </p>
 
-						<p><label>What: </label><input type="text" name="task"></p>
+                <p>
+                    <label>All Day?</label>
+                    <input type="checkbox" class="check" name="all_day" value="off">
+                </p>
 
-						<p><label>Where: </label><input type="text" name="where"></p>
+                <p>
+                    <label>Case:</label>
 
-						<p><label>Start: </label><input type="text" id="ev_start" name="start"></p>
+                    <select id="ev_case" style="width:230px;" data-placeholder="Select a Case" name="case_id">
 
-						<p><label>End: </label><input type="text" id="ev_end" name="end"></p>
+                        <option selected=selected value="NC">Non-Case</option>
 
-						<p><label>All Day? </label><input type="checkbox" class="check" name="all_day" value="off"></p>
+                        <?php $options = generate_active_cases_select($dbh, $_SESSION['login']);
 
-						<p><label>Case: </label>
+                        echo $options; ?>
 
-							<select id="ev_case" style="width:230px;" data-placeholder="Select a Case" name="case_id">
+                    </select>
 
-								<option selected=selected value="NC">Non-Case</option>
+                </p>
 
-								<?php $options = generate_active_cases_select($dbh,$_SESSION['login']);
+                <p>
+                    <label>Who?</label>
 
-								echo $options;?>
+                    <select multiple id="ev_users" style="width:230px;" data-placeholder="Select Users" name="responsibles">
 
-							</select>
+                        <?php echo all_active_users_and_groups($dbh, false, $_SESSION['login']); ?>
 
-						</p>
+                    </select>
 
-						<p><label>Who?</label>
+                </p>
 
-							<select multiple id="ev_users" style="width:230px;" data-placeholder="Select Users" name="responsibles">
+                <p>
+                    <label>Notes</label>
 
-								<?php echo all_active_users_and_groups($dbh,false,$_SESSION['login']); ?>
+                    <textarea name="notes"></textarea>
 
-							</select>
+                </p>
 
-						</p>
+                <input type="hidden" name="action" value="add">
 
-						<p><label>Notes</label>
+                <p id="quick_add_ev">
 
-							<textarea name="notes"></textarea>
+                    <button id="quick_add_ev_submit">Add</button>
 
-						</p>
+                </p>
 
-						<input type="hidden" name="action" value="add">
+            </form>
 
-						<p id = "quick_add_ev">
+        </div>
 
-							<button id="quick_add_ev_submit">Add</button>
+    </div>
 
-						</p>
+</div>
 
-					</form>
+<div id="event_detail_window">
 
-				</div>
 
-		</div>
-
-	</div>
-
-	<div id = "event_detail_window">
-
-
-	</div>
+</div>
 

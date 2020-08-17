@@ -33,39 +33,40 @@ $check_val = $l['last_msg_check'];
 
 if ($check_val === '0000-00-00 00:00:00') {
 
-	$q = $dbh->prepare("SELECT MAX(timestamp) FROM cm_logs WHERE username = ? and type = 'out'");
+    $q = $dbh->prepare("SELECT MAX(timestamp) FROM cm_logs WHERE username = ? and type = 'out'");
 
-	$user = $_SESSION['login'];
+    $user = $_SESSION['login'];
 
-	$q->bindParam(1, $user);
+    $q->bindParam(1, $user);
 
-	$q->execute();
+    $q->execute();
 
-	$l = $q->fetch();
+    $l = $q->fetch();
 
-	$check_val = $l['MAX(timestamp)'];
+    $check_val = $l['MAX(timestamp)'];
 
 }
 
 if ($check_val) {
-	$q = $dbh->prepare("SELECT COUNT(id) from cm_messages WHERE `time_sent` > :last_msg_check AND (`to` LIKE :user_last OR `to` LIKE :user_middle OR `to` LIKE :user_first OR `to`LIKE :user OR `ccs` LIKE :user_last OR `ccs` LIKE :user_middle OR `ccs` LIKE :user_first or `ccs` LIKE :user) AND `from` != :user");
+    $q = $dbh->prepare("SELECT COUNT(id) from cm_messages WHERE `time_sent` > :last_msg_check AND (`to` LIKE :user_last OR `to` LIKE :user_middle OR `to` LIKE :user_first OR `to`LIKE :user OR `ccs` LIKE :user_last OR `ccs` LIKE :user_middle OR `ccs` LIKE :user_first or `ccs` LIKE :user) AND `from` != :user");
 
-	$data = array('user' => $username,'user_last' => $user_last,'user_middle' => $user_middle,'user_first' => $user_first,'last_msg_check' => $check_val);
+    $data = ['user' => $username, 'user_last' => $user_last, 'user_middle' => $user_middle, 'user_first' => $user_first, 'last_msg_check' => $check_val];
 
-	$q->execute($data);
+    $q->execute($data);
 
-	$r = $q->fetch();
+    $r = $q->fetch();
 
-	if (empty($r['COUNT(id)']))
-		{$number = '0';}
-	else
-		{$number = $r['COUNT(id)'];}
+    if (empty($r['COUNT(id)'])) {
+        $number = '0';
+    } else {
+        $number = $r['COUNT(id)'];
+    }
 
-	$new = array('new_msg' => $number);
+    $new = ['new_msg' => $number];
 
 } else {
-	//This is user's first time ever logging in
-	$new = array('new_msg' => '0');
+    //This is user's first time ever logging in
+    $new = ['new_msg' => '0'];
 }
 
 
@@ -75,7 +76,7 @@ $q = $dbh->prepare("SELECT COUNT(id) from cm_messages WHERE (`to` LIKE :user_las
 AND (`read` NOT LIKE :user_first AND `read` NOT LIKE :user_middle AND `read` NOT LIKE :user_last_trailing)
 AND (`archive` NOT LIKE :user_first AND `archive` NOT LIKE :user_middle AND `archive` NOT LIKE :user_last_trailing) AND `id` = `thread_id`");
 
-$data = array('user_first' => $user_first,'user_middle' => $user_middle, 'user_last' => $user_last, 'user_last_trailing' => $user_last_trailing, 'user' => $username);
+$data = ['user_first' => $user_first, 'user_middle' => $user_middle, 'user_last' => $user_last, 'user_last_trailing' => $user_last_trailing, 'user' => $username];
 
 $q->execute($data);
 
@@ -83,9 +84,9 @@ $unr = $q->fetch();
 
 $unread_count = $unr['COUNT(id)'];
 
-$unread = array('unread' => $unread_count);
+$unread = ['unread' => $unread_count];
 
-$return = array_merge($new,$unread);
+$return = array_merge($new, $unread);
 
 echo json_encode($return);
 

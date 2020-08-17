@@ -8,7 +8,8 @@ require('../utilities/convert_times.php');
 
 //function to sort the activities array by subkey - date
 
-function sortBySubkey(&$array, $subkey, $sortType = SORT_DESC) {
+function sortBySubkey(&$array, $subkey, $sortType = SORT_DESC)
+{
 
     foreach ($array as $subarray) {
 
@@ -21,10 +22,11 @@ function sortBySubkey(&$array, $subkey, $sortType = SORT_DESC) {
 
 $id = $_POST['case_id'];
 
-if (isset($_POST['type']))
-{$type = $_POST['type'];}
-else
-{$type='display';}
+if (isset($_POST['type'])) {
+    $type = $_POST['type'];
+} else {
+    $type = 'display';
+}
 
 //what kind of data are we going to check?
 //1. New client name against previous adverse parties
@@ -38,7 +40,7 @@ else
 //Get this client's name
 $q = $dbh->prepare("SELECT first_name,middle_name,last_name FROM cm WHERE id = ?");
 
-$q->bindParam(1,$id);
+$q->bindParam(1, $id);
 
 $q->execute();
 
@@ -53,17 +55,19 @@ $q->execute();
 
 $adverse = $q->fetchAll(PDO::FETCH_ASSOC);
 
-$conflicts = array();
+$conflicts = [];
 
 foreach ($adverse as $ad) {
 
-	similar_text($new_client_name, $ad['name'], $per);
+    similar_text($new_client_name, $ad['name'], $per);
 
-	if ($per >= 80)
-	{
-		$conflicts[] = array('percentage' => $per,'text' => "A party named <strong> " . htmlspecialchars($ad['name'], ENT_QUOTES,'UTF-8') . " </strong> was adverse in the <a href='index.php?i=Cases.php#cases/" . $ad['case_id'] . "' target='_new'>" .
-		case_id_to_casename ($dbh,$ad['case_id']) . "</a> case.  ("  .  round($per,2) . " % match)");
-	}
+    if ($per >= 80) {
+        $conflicts[] = [
+            'percentage' => $per,
+            'text'       => "A party named <strong> " . htmlspecialchars($ad['name'], ENT_QUOTES, 'UTF-8') . " </strong> was adverse in the <a href='index.php?i=Cases.php#cases/" . $ad['case_id'] . "' target='_new'>" .
+                case_id_to_casename($dbh, $ad['case_id']) . "</a> case.  (" . round($per, 2) . " % match)",
+        ];
+    }
 
 }
 
@@ -71,56 +75,60 @@ foreach ($adverse as $ad) {
 //Get this cases's adverse parties
 $q = $dbh->prepare("SELECT * FROM cm_adverse_parties WHERE case_id = ?");
 
-$q->bindParam(1,$id);
+$q->bindParam(1, $id);
 
 $q->execute();
 
 $this_adverse_parties = $q->fetchAll();
 
-if ($q->rowCount() > 0)
-{
+if ($q->rowCount() > 0) {
 
-	//Get all client names and put in an array
-	$q = $dbh->prepare("SELECT id,first_name,middle_name,last_name FROM cm");
+    //Get all client names and put in an array
+    $q = $dbh->prepare("SELECT id,first_name,middle_name,last_name FROM cm");
 
-	$q->execute();
+    $q->execute();
 
-	$clients = $q->fetchAll(PDO::FETCH_ASSOC);
+    $clients = $q->fetchAll(PDO::FETCH_ASSOC);
 
-	$acs = array();
+    $acs = [];
 
-	foreach ($clients as $client) {
+    foreach ($clients as $client) {
 
-	$acs[] = array('case_id' => $client['id'],'name' => $client['first_name'] . ' ' .
-	$client['middle_name'] . ' ' . $client['last_name']);
+        $acs[] = [
+            'case_id' => $client['id'],
+            'name'    => $client['first_name'] . ' ' .
+                $client['middle_name'] . ' ' . $client['last_name'],
+        ];
 
-	}
+    }
 
-	//Now do the name comparison
-	foreach ($this_adverse_parties as $ap) {
+    //Now do the name comparison
+    foreach ($this_adverse_parties as $ap) {
 
-		foreach ($acs as $ac) {
+        foreach ($acs as $ac) {
 
-			similar_text($ap['name'], $ac['name'], $per);
+            similar_text($ap['name'], $ac['name'], $per);
 
-			if ($per >= 80)
-			{
-				$conflicts[] = array('percentage' => $per,'text' =>
-				"We represented a party named <strong>" . htmlspecialchars($ap['name'], ENT_QUOTES,'UTF-8') . " </strong> in the <a href='index.php?i=Cases.php#cases/"
-				. $ac['case_id'] . "' target='_new'>" .
-				case_id_to_casename ($dbh,$ac['case_id']) . "</a> case. " . htmlspecialchars($ap['name'], ENT_QUOTES,'UTF-8') . " is adverse in this case. ("  .
-				round($per,2) . " % match)");
-			}
+            if ($per >= 80) {
+                $conflicts[] = [
+                    'percentage' => $per,
+                    'text'       =>
+                        "We represented a party named <strong>" . htmlspecialchars($ap['name'], ENT_QUOTES, 'UTF-8') . " </strong> in the <a href='index.php?i=Cases.php#cases/"
+                        . $ac['case_id'] . "' target='_new'>" .
+                        case_id_to_casename($dbh, $ac['case_id']) . "</a> case. " . htmlspecialchars($ap['name'], ENT_QUOTES, 'UTF-8') . " is adverse in this case. (" .
+                        round($per, 2) . " % match)",
+                ];
+            }
 
-		}
-	}
+        }
+    }
 }
 
 //3.
 //Get this cases's contacts
 $q = $dbh->prepare("SELECT * FROM cm_contacts WHERE assoc_case = ?");
 
-$q->bindParam(1,$id);
+$q->bindParam(1, $id);
 
 $q->execute();
 
@@ -128,112 +136,105 @@ $contacts = $q->fetchAll(PDO::FETCH_ASSOC);
 
 $contact_number = $q->rowCount();
 
-if ($contact_number > 0)
-{
-	//Get all client names and put in an array
-	$q = $dbh->prepare("SELECT id,first_name,middle_name,last_name FROM cm");
+if ($contact_number > 0) {
+    //Get all client names and put in an array
+    $q = $dbh->prepare("SELECT id,first_name,middle_name,last_name FROM cm");
 
-	$q->execute();
+    $q->execute();
 
-	$clients = $q->fetchAll(PDO::FETCH_ASSOC);
+    $clients = $q->fetchAll(PDO::FETCH_ASSOC);
 
-	$acs = array();
+    $acs = [];
 
-	foreach ($clients as $client) {
+    foreach ($clients as $client) {
 
-	$acs[] = array('case_id' => $client['id'],'name' => $client['first_name'] . ' ' .
-	$client['middle_name'] . ' ' . $client['last_name']);
+        $acs[] = [
+            'case_id' => $client['id'],
+            'name'    => $client['first_name'] . ' ' .
+                $client['middle_name'] . ' ' . $client['last_name'],
+        ];
 
-	}
+    }
 
-	//Now do the name comparison
-	foreach ($contacts as $contact) {
+    //Now do the name comparison
+    foreach ($contacts as $contact) {
 
-		foreach ($acs as $ac) {
+        foreach ($acs as $ac) {
 
-			$contact_name = $contact['first_name'] . ' ' . $contact['last_name'];
+            $contact_name = $contact['first_name'] . ' ' . $contact['last_name'];
 
-			if (!$contact['type'])
-			{
-				$contact_type = "contact";
-			}
-			else
-			{
-				$contact_type = $contact['type'];
-			}
+            if (!$contact['type']) {
+                $contact_type = "contact";
+            } else {
+                $contact_type = $contact['type'];
+            }
 
-			similar_text($contact_name, $ac['name'], $per);
+            similar_text($contact_name, $ac['name'], $per);
 
-			if ($per >= 80)
-			{
-				$conflicts[] = array('percentage' => $per,'text' =>
-				"We represented a party named <strong>" . htmlspecialchars($contact_name ,ENT_QUOTES,'UTF-8'). "</strong> in the <a href='index.php?i=Cases.php#cases/"
-				. $ac['case_id'] . "' target='_new'>" .
-				case_id_to_casename ($dbh,$ac['case_id']) . "</a> case." .  htmlspecialchars($contact_name ,ENT_QUOTES,'UTF-8'). " is a
-				$contact_type in this case. ("  . round($per,2) . " % match)");
-			}
+            if ($per >= 80) {
+                $conflicts[] = [
+                    'percentage' => $per,
+                    'text'       =>
+                        "We represented a party named <strong>" . htmlspecialchars($contact_name, ENT_QUOTES, 'UTF-8') . "</strong> in the <a href='index.php?i=Cases.php#cases/"
+                        . $ac['case_id'] . "' target='_new'>" .
+                        case_id_to_casename($dbh, $ac['case_id']) . "</a> case." . htmlspecialchars($contact_name, ENT_QUOTES, 'UTF-8') . " is a
+				$contact_type in this case. (" . round($per, 2) . " % match)",
+                ];
+            }
 
-		}
-	}
+        }
+    }
 }
 
 //4.
 //use the previously generated contacts
-if ($contact_number >0)
-{
-	$q = $dbh->prepare("SELECT * FROM cm_adverse_parties");
+if ($contact_number > 0) {
+    $q = $dbh->prepare("SELECT * FROM cm_adverse_parties");
 
-	$q->execute();
+    $q->execute();
 
-	$adverse = $q->fetchAll(PDO::FETCH_ASSOC);
+    $adverse = $q->fetchAll(PDO::FETCH_ASSOC);
 
-	foreach ($adverse as $ad) {
+    foreach ($adverse as $ad) {
 
-		$contact_name = $contact['first_name'] . ' ' . $contact['last_name'];
+        $contact_name = $contact['first_name'] . ' ' . $contact['last_name'];
 
-		if (!$contact['type'])
-			{
-				$contact_type = "contact";
-			}
-			else
-			{
-				$contact_type = $contact['type'];
-			}
+        if (!$contact['type']) {
+            $contact_type = "contact";
+        } else {
+            $contact_type = $contact['type'];
+        }
 
-		similar_text($contact_name, $ad['name'], $per);
+        similar_text($contact_name, $ad['name'], $per);
 
-		if ($per >= 80)
-		{
-			$conflicts[] = array('percentage' => $per,'text' => "A party named <strong> " . htmlspecialchars($ad['name'], ENT_QUOTES,'UTF-8') . " </strong> was adverse in the <a href='index.php?i=Cases.php#cases/" . $ad['case_id'] . "' target='_new'>" .
-			case_id_to_casename ($dbh,$ad['case_id']) . "</a> case. " .  htmlspecialchars($contact_name ,ENT_QUOTES,'UTF-8'). " is a " . 
-			htmlspecialchars($contact_type ,ENT_QUOTES,'UTF-8') . " in this case. ("  .  round($per,2) . " % match)");
-		}
+        if ($per >= 80) {
+            $conflicts[] = [
+                'percentage' => $per,
+                'text'       => "A party named <strong> " . htmlspecialchars($ad['name'], ENT_QUOTES,
+                        'UTF-8') . " </strong> was adverse in the <a href='index.php?i=Cases.php#cases/" . $ad['case_id'] . "' target='_new'>" .
+                    case_id_to_casename($dbh, $ad['case_id']) . "</a> case. " . htmlspecialchars($contact_name, ENT_QUOTES, 'UTF-8') . " is a " .
+                    htmlspecialchars($contact_type, ENT_QUOTES, 'UTF-8') . " in this case. (" . round($per, 2) . " % match)",
+            ];
+        }
 
-	}
+    }
 }
 
 //Return the data
 $count = count($conflicts);
 
-if ($type === 'alert')
-{
-	if ($count > 0)
-	{
-		$return = array('conflicts' => true,'number' => $count);
-		echo json_encode($return);
-	}
-	else
-	{
-		$return = array('conflicts' => false);
-		echo json_encode($return);
-	}
-}
-else
-{
-	if ($count > 0)
-	{
-		sortBySubkey($conflicts,'percentage');
-	}
+if ($type === 'alert') {
+    if ($count > 0) {
+        $return = ['conflicts' => true, 'number' => $count];
+        echo json_encode($return);
+    } else {
+        $return = ['conflicts' => false];
+        echo json_encode($return);
+    }
+} else {
+    if ($count > 0) {
+        sortBySubkey($conflicts, 'percentage');
+    }
 
-	include('../../../html/templates/interior/cases_conflicts.php');
+    include('../../../html/templates/interior/cases_conflicts.php');
 }

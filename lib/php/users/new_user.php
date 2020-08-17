@@ -9,41 +9,37 @@ function genKey() //generates user's private key
 
     $length = 40; // Length of password
 
-    $p ="";
-    for ($i=0;$i<$length;$i++)
-    {
-        $c = mt_rand(1,7);
-        switch ($c)
-        {
-            case ($c<=2):
+    $p = "";
+    for ($i = 0; $i < $length; $i++) {
+        $c = mt_rand(1, 7);
+        switch ($c) {
+            case ($c <= 2):
                 // Add a number
-                $p .= mt_rand(0,9);
-            break;
-            case ($c<=4):
+                $p .= mt_rand(0, 9);
+                break;
+            case ($c <= 4):
                 // Add an uppercase letter
-                $p .= chr(mt_rand(65,90));
-            break;
-            case ($c<=6):
+                $p .= chr(mt_rand(65, 90));
+                break;
+            case ($c <= 6):
                 // Add a lowercase letter
-                $p .= chr(mt_rand(97,122));
-            break;
+                $p .= chr(mt_rand(97, 122));
+                break;
             case 7:
-                 $len = strlen($p);
-                if ($underscores>0&&$len>0&&$len<9&&$p[$len-1]!="_")
-                {
+                $len = strlen($p);
+                if ($underscores > 0 && $len > 0 && $len < 9 && $p[$len - 1] != "_") {
                     $p .= "_";
                     $underscores--;
-                }
-                else
-                {
+                } else {
                     $i--;
                     continue;
                 }
-            break;
+                break;
         }
     }
     return $p;
 }
+
 $temp_username = rand();
 
 $private_key = genKey();
@@ -54,20 +50,18 @@ $q->execute();
 
 $error = $q->errorInfo();
 
-if ($error[1])
-{print_r($error);die;
-	$response = array('error' => true, "message" => "Sorry, there was an error creating the new user.");
+if ($error[1]) {
+    print_r($error);
+    die;
+    $response = ['error' => true, "message" => "Sorry, there was an error creating the new user."];
 
-	echo json_encode($response);
-}
+    echo json_encode($response);
+} else {
+    $last_id = $dbh->lastInsertId();
 
-else
-{
-	$last_id = $dbh->lastInsertId();
+    $response = ['id' => $last_id];
 
-	$response = array('id' => $last_id);
-
-	echo json_encode($response);
+    echo json_encode($response);
 
 }
 

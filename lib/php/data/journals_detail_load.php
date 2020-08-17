@@ -7,26 +7,22 @@ include '../utilities/thumbnails.php';
 include '../utilities/convert_times.php';
 include '../html/gen_select.php';
 
-if($_SESSION['permissions']['reads_journals'] == '0' &&
-$_SESSION['permissions']['writes_journals'] == '0')
-{
-	die('Sorry, you do not have permission to read or write journals');
+if ($_SESSION['permissions']['reads_journals'] == '0' &&
+    $_SESSION['permissions']['writes_journals'] == '0') {
+    die('Sorry, you do not have permission to read or write journals');
 }
 
 $id = $_POST['id'];
 
-if (isset($_POST['view']))
-{
-	$view = $_POST['view'];
-}
-else
-{
-	$view = null;
+if (isset($_POST['view'])) {
+    $view = $_POST['view'];
+} else {
+    $view = null;
 }
 
 $q = $dbh->prepare("SELECT * FROM cm_journals WHERE id = ?");
 
-$q->bindParam(1,$id[0]);
+$q->bindParam(1, $id[0]);
 
 $q->execute();
 

@@ -1,10 +1,10 @@
 <?php
 
-function state_selector($element_name,$element_id)
+function state_selector($element_name, $element_id)
 {
-	$select = "<select name='$element_name' id='$element_id'><option selected=selected value=''></option>";
+    $select = "<select name='$element_name' id='$element_id'><option selected=selected value=''></option>";
 
-	$select .= "
+    $select .= "
 	<option value = 'AK'>Alaska</option>
 	<option value = 'AL'>Alabama</option>
 	<option value = 'AR'>Arkansas</option>
@@ -62,7 +62,7 @@ function state_selector($element_name,$element_id)
 	<option value = 'WV'>West Virginia</option>
 	<option value = 'WY'>Wyoming</option>";
 
-	$select .= "</select>";
+    $select .= "</select>";
 
-	return $select;
+    return $select;
 }

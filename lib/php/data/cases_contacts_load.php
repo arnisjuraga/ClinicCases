@@ -8,11 +8,14 @@ require_once(CC_PATH . '/lib/php/html/gen_select.php');
 function array_unique_deep($array)
 {
 
-    $values=array();
+    $values = [];
 
     foreach ($array as $part) {
-        if (is_array($part)) $values=array_merge($values,array_unique_deep($part));
-        else $values[]=$part;
+        if (is_array($part)) {
+            $values = array_merge($values, array_unique_deep($part));
+        } else {
+            $values[] = $part;
+        }
     }
 
     return array_unique($values);
@@ -45,9 +48,9 @@ $contacts_query = $dbh->prepare($sql);
 
 if ($q) {
     $search_term = '%' . $q . '%';
-    $data = array('case_id' => $case_id, 'q' => $search_term);
+    $data = ['case_id' => $case_id, 'q' => $search_term];
 } else {
-    $data = array('case_id' => $case_id);
+    $data = ['case_id' => $case_id];
 }
 
 
@@ -55,6 +58,6 @@ $contacts_query->execute($data);
 
 $contacts = $contacts_query->fetchAll(PDO::FETCH_ASSOC);
 
-if (!$_SESSION['mobile']){
+if (!$_SESSION['mobile']) {
     include('../../../html/templates/interior/cases_contacts.php');
 }

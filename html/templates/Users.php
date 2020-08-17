@@ -15,171 +15,194 @@
 
 
 <!-- Jquery Calls Specific to this page -->
-<?php if ($_SESSION['permissions']['view_users']  == '1'){ ?>
+<?php if ($_SESSION['permissions']['view_users'] == '1') { ?>
 
-	<script  src="html/js/users.min.js" type="text/javascript"></script>
+    <script src="html/js/users.min.js" type="text/javascript"></script>
 
-	<script src="lib/DataTables-1.8.2/media/js/jquery.dataTables.js" type="text/javascript"></script>
+    <script src="lib/DataTables-1.8.2/media/js/jquery.dataTables.js" type="text/javascript"></script>
 
-	<script type="text/javascript" src="lib/DataTables-1.8.2/extras/TableTools/media/js/TableTools.min.js"></script>
+    <script type="text/javascript" src="lib/DataTables-1.8.2/extras/TableTools/media/js/TableTools.min.js"></script>
 
-	<script type="text/javascript" src="lib/DataTables-1.8.2/extras/ColReorder/media/js/ColReorder.min.js"></script>
+    <script type="text/javascript" src="lib/DataTables-1.8.2/extras/ColReorder/media/js/ColReorder.min.js"></script>
 
-	<script type="text/javascript" src="lib/DataTables-1.8.2/extras/ColVis/media/js/ColVis.js"></script>
+    <script type="text/javascript" src="lib/DataTables-1.8.2/extras/ColVis/media/js/ColVis.js"></script>
 
-	<script type="text/javascript" src="lib/javascripts/dataTablesFunctions.js"></script>
+    <script type="text/javascript" src="lib/javascripts/dataTablesFunctions.js"></script>
 
-	<script type="text/javascript" src="lib/javascripts/chosen/chosen.jquery.min.js"></script>
+    <script type="text/javascript" src="lib/javascripts/chosen/chosen.jquery.min.js"></script>
 
-	<script type="text/javascript" src="lib/javascripts/valums-file-uploader/client/fileuploader.js"></script>
+    <script type="text/javascript" src="lib/javascripts/valums-file-uploader/client/fileuploader.js"></script>
 
-	<script type="text/javascript" src="lib/javascripts/Jcrop/js/jquery.Jcrop.min.js"></script>
+    <script type="text/javascript" src="lib/javascripts/Jcrop/js/jquery.Jcrop.min.js"></script>
 
 <?php } ?>
 
 </head>
 <body>
 
-	<div id="notifications"></div>
+<div id="notifications"></div>
 
-	<?php include 'html/templates/interior/timer.php' ?>
+<?php include 'html/templates/interior/timer.php' ?>
 
-	<?php include 'html/templates/interior/idletimeout.php' ?>
+<?php include 'html/templates/interior/idletimeout.php' ?>
 
-	<div id = "nav_container">
+<div id="nav_container">
 
-		<?php $t = tabs($dbh,$_GET['i']); echo $t; ?>
+    <?php $t = tabs($dbh, $_GET['i']);
+    echo $t; ?>
 
-		<div id="menus">
+    <div id="menus">
 
-			<?php include 'html/templates/Menus.php'; ?>
+        <?php include 'html/templates/Menus.php'; ?>
 
-		</div>
+    </div>
 
-	</div>
+</div>
 
-	<div id="content">
+<div id="content">
 
-		<?php if ($_SESSION['permissions']['view_users']  !== '1'){die("Sorry, you do not have permission to view users.");} ?>
+    <?php if ($_SESSION['permissions']['view_users'] !== '1') {
+        die("Sorry, you do not have permission to view users.");
+    } ?>
 
-		<div id="processing">Loading....</div>
+    <div id="processing">Loading....</div>
 
-		<table id = "table_users" class="display">
+    <table id="table_users" class="display">
 
-			<thead>
+        <thead>
 
-				<tr>
+        <tr>
 
-					<th>Id</th>
+            <th>Id</th>
 
-					<th>Face</th>
+            <th>Face</th>
 
-					<th>First Name</th>
+            <th>First Name</th>
 
-					<th>Last Name</th>
+            <th>Last Name</th>
 
-					<th>Email</th>
+            <th>Email</th>
 
-					<th>Mobile Phone</th>
+            <th>Mobile Phone</th>
 
-					<th>Office Phone</th>
+            <th>Office Phone</th>
 
-					<th>Home Phone</th>
+            <th>Home Phone</th>
 
-					<th>Group</th>
+            <th>Group</th>
 
-					<th>Username</th>
+            <th>Username</th>
 
-					<th>Supervisors</th>
+            <th>Supervisors</th>
 
-					<th>Status</th>
+            <th>Status</th>
 
-					<th>New</th>
+            <th>New</th>
 
-					<th>Date Created</th>
+            <th>Date Created</th>
 
-				</tr>
+        </tr>
 
-				<tr class="advanced">
+        <tr class="advanced">
 
-					<th><input type="text"  name = "id" class = "search_init"></th>
+            <th>
+                <input type="text" name="id" class="search_init">
+            </th>
 
-					<th></th>
+            <th></th>
 
-					<th><input type="text"  name = "first_name" class = "search_init"></th>
+            <th>
+                <input type="text" name="first_name" class="search_init">
+            </th>
 
-					<th><input type="text"  name = "last_name" class = "search_init"></th>
+            <th>
+                <input type="text" name="last_name" class="search_init">
+            </th>
 
-					<th><input type="text"  name = "email" class = "search_init"></th>
+            <th>
+                <input type="text" name="email" class="search_init">
+            </th>
 
-					<th><input type="text"  name = "mobile_phone" class = "search_init"></th>
+            <th>
+                <input type="text" name="mobile_phone" class="search_init">
+            </th>
 
-					<th><input type="text"  name = "office_phone" class = "search_init"></th>
+            <th>
+                <input type="text" name="office_phone" class="search_init">
+            </th>
 
-					<th><input type="text"  name = "home_phone" class = "search_init"></th>
+            <th>
+                <input type="text" name="home_phone" class="search_init">
+            </th>
 
-					<th class="addSelects" name = "group"></th>
+            <th class="addSelects" name="group"></th>
 
-					<th><input type="text"  name = "username" class = "search_init"></th>
+            <th>
+                <input type="text" name="username" class="search_init">
+            </th>
 
-					<th><input type="text"  name = "supervisors" class = "search_init"></th>
+            <th>
+                <input type="text" name="supervisors" class="search_init">
+            </th>
 
-					<th class="addSelects" name = "status"></th>
+            <th class="addSelects" name="status"></th>
 
-					<th class="addSelects" name = "new"></th>
+            <th class="addSelects" name="new"></th>
 
-					<th class="complex">
+            <th class="complex">
 
-						<select id="date_created_range" title = "Date created is less, greater, or equal to...">
-							<option value="equals" selected=selected>=</option>
-							<option value="greater">&gt;</option>
-							<option value="less">&lt;</option>
-						</select>
+                <select id="date_created_range" title="Date created is less, greater, or equal to...">
+                    <option value="equals" selected=selected>=</option>
+                    <option value="greater">&gt;</option>
+                    <option value="less">&lt;</option>
+                </select>
 
-						<input type="text" name = "date_created" id="date_created" class="search_init" title="Select a Date" column = "date_created"><br />
+                <input type="text" name="date_created" id="date_created" class="search_init" title="Select a Date" column="date_created">
+                <br/>
 
-						<a href="#" id="addDateRow" class="smallgray">Add Condition</a>
+                <a href="#" id="addDateRow" class="smallgray">Add Condition</a>
 
-					</th>
+            </th>
 
-				</tr>
+        </tr>
 
-				<tr class="advanced_2">
+        <tr class="advanced_2">
 
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th>
-						<select id="date_created_range_2" title = "Date created is less, greater, or equal to...">
-							<option value="equals" selected=selected>=</option>
-							<option value="greater">&gt;</option>
-							<option value="less">&lt;</option>
-						</select>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>
+                <select id="date_created_range_2" title="Date created is less, greater, or equal to...">
+                    <option value="equals" selected=selected>=</option>
+                    <option value="greater">&gt;</option>
+                    <option value="less">&lt;</option>
+                </select>
 
-						<input type="text" name = "date_created_2" id="date_created_2" class="search_init" title="Select a Date" column = "date_created_"><br />
-					</th>
-
-
-			</thead>
-
-			<tbody>
-
-			</tbody>
-
-		</table>
+                <input type="text" name="date_created_2" id="date_created_2" class="search_init" title="Select a Date" column="date_created_">
+                <br/>
+            </th>
 
 
-	</div>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+
+    </table>
+
+
+</div>
 
 
 

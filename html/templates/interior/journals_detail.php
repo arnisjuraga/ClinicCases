@@ -1,103 +1,108 @@
 <div class="journal_detail">
 
-	<div class="journal_header ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix">
+    <div class="journal_header ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix">
 
-		<img class="thumbnail-mask" src="<?php echo return_thumbnail($dbh,$username); ?>" border="0">
+        <img class="thumbnail-mask" src="<?php echo return_thumbnail($dbh, $username); ?>" border="0">
 
-		<p>Journal Submitted by <?php echo username_to_fullname ($dbh,$username); ?> on <?php echo extract_date_time($date_added); ?>
-		</p>
+        <p>Journal Submitted by <?php echo username_to_fullname($dbh, $username); ?> on <?php echo extract_date_time($date_added); ?>
+        </p>
 
-		<div class = "journal_detail_control">
+        <div class="journal_detail_control">
 
-			<?php if ($view !== 'edit'  && $_SESSION['permissions']['writes_journals'] == '1'){ ?>
+            <?php if ($view !== 'edit' && $_SESSION['permissions']['writes_journals'] == '1') { ?>
 
-			<button class="journal_delete">Delete</button>
-			<button class="journal_edit">Edit</button>
-			<button class="journal_print">Print</button>
+                <button class="journal_delete">Delete</button>
+                <button class="journal_edit">Edit</button>
+                <button class="journal_print">Print</button>
 
-				<?php } elseif ($view !=='edit'){?>
+            <?php } elseif ($view !== 'edit') { ?>
 
-			<button class="journal_print">Print</button>
-				<?php } ?>
+                <button class="journal_print">Print</button>
+            <?php } ?>
 
-			<button class="journal_close">Close</button>
+            <button class="journal_close">Close</button>
 
-		</div>
+        </div>
 
-	</div>
+    </div>
 
-	<div class="journal_body" data-id="<?php echo $id; ?>">
+    <div class="journal_body" data-id="<?php echo $id; ?>">
 
-		<?php if ($view == 'edit'){ ?>
+        <?php if ($view == 'edit') { ?>
 
-		<div class="journal_write_data">
+            <div class="journal_write_data">
 
-			<label>Send to:</label>
+                <label>Send to:</label>
 
-			<select multiple name="reader_select[]" data-placeholder="Submit this journal to" style="width:350px">
+                <select multiple name="reader_select[]" data-placeholder="Submit this journal to" style="width:350px">
 
-				<option value = ""></option>
-				<?php echo get_journal_readers($dbh,$reader); ?>
+                    <option value=""></option>
+                    <?php echo get_journal_readers($dbh, $reader); ?>
 
-			</select>
+                </select>
 
-			<label>Remember</label>
-			<input type="checkbox" name="remember_choice">
+                <label>Remember</label>
+                <input type="checkbox" name="remember_choice">
 
-		</div>
+            </div>
 
-		<div class="journal_status">
+            <div class="journal_status">
 
-			<span class= "save_status">Unchanged</span>
+                <span class="save_status">Unchanged</span>
 
-		</div>
+            </div>
 
-		<?php } ?>
+        <?php } ?>
 
-		<div class="journal_text">
+        <div class="journal_text">
 
-		<?php if ($view == 'edit'){echo "<textarea class='journal_edit'>" . htmlspecialchars($text ,ENT_QUOTES,'UTF-8'). "</textarea>";}else{echo $text;} ?>
+            <?php if ($view == 'edit') {
+                echo "<textarea class='journal_edit'>" . htmlspecialchars($text, ENT_QUOTES, 'UTF-8') . "</textarea>";
+            } else {
+                echo $text;
+            } ?>
 
-		</div>
+        </div>
 
-		<div class="journal_comments">
+        <div class="journal_comments">
 
-			<?php if ($comments)
-			{
-				$c_array = unserialize($comments);
+            <?php if ($comments) {
+                $c_array = unserialize($comments);
 
-				foreach ($c_array as $key => $value) {?>
+                foreach ($c_array as $key => $value) { ?>
 
-					<div class = "comment <?php if ($value['by'] == $_SESSION['login']){echo "can_delete";} ?>" data-id="<?php echo $key; ?>">
+                    <div class="comment <?php if ($value['by'] == $_SESSION['login']) {
+                        echo "can_delete";
+                    } ?>" data-id="<?php echo $key; ?>">
 
-						<img class="thumbnail-mask" src="<?php echo return_thumbnail($dbh, $value['by']); ?>" border="0">
+                        <img class="thumbnail-mask" src="<?php echo return_thumbnail($dbh, $value['by']); ?>" border="0">
 
-						<p><?php echo  strip_tags($value['text'], '<br><br />'); ?></p>
+                        <p><?php echo strip_tags($value['text'], '<br><br />'); ?></p>
 
-						<a href="#" class="comment_delete">Delete</a>
+                        <a href="#" class="comment_delete">Delete</a>
 
 
-					</div>
+                    </div>
 
-				<?php }
-			}
-			?>
+                <?php }
+            }
+            ?>
 
-			<?php if ($view !== 'edit'){ ?>
+            <?php if ($view !== 'edit') { ?>
 
-			<div class = "comment">
-				<img class="thumbnail-mask" src="<?php echo return_thumbnail($dbh, $_SESSION['login']); ?>" border="0">
+                <div class="comment">
+                    <img class="thumbnail-mask" src="<?php echo return_thumbnail($dbh, $_SESSION['login']); ?>" border="0">
 
-				<textarea class="expand">Your comment</textarea>
+                    <textarea class="expand">Your comment</textarea>
 
-				<a href="#" class="comment_save">Save</a>
+                    <a href="#" class="comment_save">Save</a>
 
-			</div>
+                </div>
 
-			<?php } ?>
+            <?php } ?>
 
-		</div>
+        </div>
 
-	</div>
+    </div>
 
 </div>

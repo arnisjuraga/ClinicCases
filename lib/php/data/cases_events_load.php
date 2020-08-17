@@ -21,37 +21,43 @@ if (isset($_REQUEST['q'])) {
     $q = null;
 }
 
-function get_responsibles($dbh,$event_id)
+function get_responsibles($dbh, $event_id)
 { //get names of all users on event
 
-	$q = $dbh->prepare("SELECT * FROM cm_events_responsibles
+    $q = $dbh->prepare("SELECT * FROM cm_events_responsibles
 		WHERE event_id = '$event_id'");
-	$q->execute();
-	$users = $q->fetchAll(PDO::FETCH_ASSOC);
-	$responsibles = array();
+    $q->execute();
+    $users = $q->fetchAll(PDO::FETCH_ASSOC);
+    $responsibles = [];
 
-	foreach ($users as $user) {
-		$lastname = username_to_lastname($dbh,$user['username']);
-		$fullname = username_to_fullname($dbh,$user['username']);
-		$user_id = username_to_userid($dbh,$user['username']);
-		$thumb = return_thumbnail($dbh,$user['username']);
-		$responsibles[] = array('user_id' => $user_id,'last_name' => $lastname,
-			'full_name' => $fullname, 'thumb' => $thumb,'username' => $user['username']);
-	}
+    foreach ($users as $user) {
+        $lastname = username_to_lastname($dbh, $user['username']);
+        $fullname = username_to_fullname($dbh, $user['username']);
+        $user_id = username_to_userid($dbh, $user['username']);
+        $thumb = return_thumbnail($dbh, $user['username']);
+        $responsibles[] = [
+            'user_id'   => $user_id,
+            'last_name' => $lastname,
+            'full_name' => $fullname,
+            'thumb'     => $thumb,
+            'username'  => $user['username'],
+        ];
+    }
 
-	return $responsibles;
+    return $responsibles;
 }
 
 function generate_thumbs($responsibles)
 { //create thumbnail row for assigned users
 
-	$thumb_row = null;
-	foreach ($responsibles as $resp) {;
-		$thumb_row .= "<span class='user_identifier' data='" . $resp['username'] .
-        "'><img class='thumbnail-mask' src = '" . $resp['thumb']  . "' border = '0' title='" . $resp['full_name']  . "'></span>";
-	}
+    $thumb_row = null;
+    foreach ($responsibles as $resp) {
+        ;
+        $thumb_row .= "<span class='user_identifier' data='" . $resp['username'] .
+            "'><img class='thumbnail-mask' src = '" . $resp['thumb'] . "' border = '0' title='" . $resp['full_name'] . "'></span>";
+    }
 
-	return $thumb_row;
+    return $thumb_row;
 }
 
 
@@ -66,17 +72,17 @@ if (isset($q)) {  //searching events
 //Load events
 $get_events = $dbh->prepare($sql);
 
-if (isset($q)){  //searching events
-    $data = array('id' => $id, 'q' => $search_term);}
-else {
-    $data = array('id' => $id);
+if (isset($q)) {  //searching events
+    $data = ['id' => $id, 'q' => $search_term];
+} else {
+    $data = ['id' => $id];
 }
 
 $get_events->execute($data);
 
 $events = $get_events->fetchAll(PDO::FETCH_ASSOC);
 
-if (!$_SESSION['mobile']){
+if (!$_SESSION['mobile']) {
     include('../../../html/templates/interior/cases_events.php');
 }
 
