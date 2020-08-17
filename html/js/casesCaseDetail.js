@@ -92,7 +92,7 @@ function addDetailTabs(id,newCase) {
                         //Notify of conflicts
                         checkConflicts(id);
                     }
-                    
+
                     $('.assigned_people').jScrollPane({autoReinitialise:true});
                 }
             });

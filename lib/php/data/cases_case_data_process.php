@@ -81,6 +81,7 @@ switch ($action) {
 
 		$q->execute($post['values']);
 
+
 		$error = $q->errorInfo();
 
 			//now put adverse parties in cm_adverse_parties table
@@ -112,16 +113,24 @@ switch ($action) {
 		else
 			{$open_close = 'edit';}
 
+
+		// Type Matching for SQL
+		$_POST['income'] = (int)$_POST['income'];
+
 		$post = bindPostVals($_POST,$open_close);
 
 		$q = $dbh->prepare("UPDATE cm SET " . $post['columns'] . " WHERE id = :id");
 
 		$q->execute($post['values']);
 
-		$error = $q->errorInfo();
+		// var_dump ($q->queryString);
+		// var_dump ($q->lastQuery);
+		// var_dump ($q->query);
+		// var_dump ($_POST);
+		// die();
 
-		if ($error[1])
-			{print_r($error);}
+
+		$error = $q->errorInfo();
 
 			//deal with any changes to adverse parties
 			if (!$error[1])
@@ -177,7 +186,7 @@ switch ($action) {
             $col_array = array();
             $req_cols = array('id','clinic_id','first_name','middle_name','last_name','organization','date_open','date_close','opened_by','time_opened','time_closed');
             foreach ($cols as $c) {
-               $col_array[] = $c['COLUMN_NAME'];  
+               $col_array[] = $c['COLUMN_NAME'];
             }
             //Here are the columns that must be emptied out
             $to_be_cleared = array_diff($col_array,$req_cols);
@@ -203,7 +212,7 @@ switch ($action) {
         }
 
 		$error = $q->errorInfo();
-        //4. Assuming successful deletion from cm, next delete all assoc_case data 
+        //4. Assuming successful deletion from cm, next delete all assoc_case data
         if ($error[1]){
             $return = array('message' => 'Sorry, there was an error deleting the case. Please try again.','error' => true);
             echo json_encode($return);
@@ -224,7 +233,7 @@ switch ($action) {
                 $return = array('message' => 'Sorry, there was an error deleting associated case data. Some data may remain.','error' => true);
                 echo json_encode($return);
             } else {
-                //events are handled separately            
+                //events are handled separately
                 $q = $dbh->prepare('SELECT * FROM cm_events where case_id = ?');
                 $q->bindParam(1, $id);
                 $q->execute();
@@ -239,7 +248,7 @@ switch ($action) {
                     $q = $dbh->prepare("DELETE FROM cm_events where case_id = ?");
                     $q->bindParam(1,$id);
                     $q->execute();
-                } 
+                }
             }
         }
 
@@ -249,8 +258,21 @@ switch ($action) {
 
 if ($error[1])
 {
-	$return = array('message' => 'Sorry, there was an error. Please try again.','error' => true);
-	echo json_encode($return);
+
+    if ($error[1])
+    {
+        $message = 'Error: Sorry, there was an error.';
+        if(!empty($error[2])){
+            $message .= "\n<br /><span style='color:red;'>" . $error[2] . "</span> ";
+        }
+
+
+        $return = array('message' => $message ,'error' => true);
+        echo json_encode($return);
+
+    }
+
+
 }
 else
 {

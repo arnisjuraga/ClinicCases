@@ -65,7 +65,8 @@ foreach ($user_array as $user)
 
 		{
 		//add user to case
-		$user_add_query = $dbh->prepare("INSERT INTO  cm_case_assignees (`id` ,`username` ,`case_id` ,`status` ,`date_assigned` ,`date_removed`)VALUES (NULL ,  :user,  :case_id,  'active', CURRENT_TIMESTAMP ,  '0000-00-00 00:00:00');");
+		$user_add_query = $dbh->prepare("INSERT INTO  cm_case_assignees (`id` ,`username` ,`case_id` ,`status` ,`date_assigned` ,`date_removed`)
+        VALUES (NULL ,  :user,  :case_id,  'active', CURRENT_TIMESTAMP ,  NULL);");
 
 		$user_add_query->bindParam(':user',$user);
 
@@ -90,7 +91,7 @@ foreach ($user_array as $user)
 
 		$q->execute($data);
 
-		$error = $q->errorInfo();
+        $error = $q->errorInfo();
 
 		if (!$error[1])
 		{
@@ -121,11 +122,19 @@ if (isset($update_status))
 		$error = $update_status->errorInfo();
 	}
 
-if($error[1])
-	{echo "Error: There was an error adding users";}
-	else
-	{
+if ($error[1]) {
 
-		echo "User(s) added to case";
+    $message = 'Error: There was an error adding users.';
+    if(!empty($error[2])){
+        $message .= "\n<br /><span style='color:red;'>" . $error[2] . "</span> ";
+    }
 
-	}
+    echo $message;
+    // $return = array('message' => $message ,'error' => true);
+
+
+} else {
+
+    echo "User(s) added to case";
+
+}

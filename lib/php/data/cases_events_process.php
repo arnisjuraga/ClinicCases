@@ -258,8 +258,18 @@ switch ($action) {
 if($error[1])
 
 		{
-			$return = array('message' => 'Sorry, there was an error. Please try again.','error' => true);
-			echo json_encode($return);
+
+            $message = 'Error: Sorry, there was an error.';
+            if(!empty($error[2])){
+                $message .= "\n<br /><span style='color:red;'>" . $error[2] . "</span> ";
+            }
+
+
+            $return = array('message' => $message ,'error' => true);
+            echo json_encode($return);
+
+
+
 		}
 
 		else

@@ -189,7 +189,9 @@ $result = $uploader->handleUpload('../../../uploads/');
      {echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);die;}
  else
  {
-    $upload_doc_query = $dbh->prepare("INSERT INTO cm_documents (id, name, local_file_name, extension, folder, username, case_id, date_modified) VALUES (NULL, :name, '', :extension, :folder,:user, :case_id, CURRENT_TIMESTAMP);");
+    $upload_doc_query = $dbh->prepare("INSERT INTO cm_documents (
+id, name, local_file_name, extension, folder, username, case_id, date_modified, `text` 
+) VALUES (NULL, :name, '', :extension, :folder,:user, :case_id, CURRENT_TIMESTAMP, '' );");
 
     $users_file_name = $result['file'] . "." . $result['ext'];
 
@@ -202,7 +204,8 @@ $result = $uploader->handleUpload('../../../uploads/');
     if ($error[1])
         {
             $result = array('error'=>$error[1]);
-            htmlspecialchars(json_encode($result), ENT_NOQUOTES);
+            // htmlspecialchars(json_encode($result), ENT_NOQUOTES);
+            var_dump ($error) ;
             die;
         };
 

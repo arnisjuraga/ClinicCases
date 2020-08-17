@@ -167,7 +167,9 @@ switch ($action) {
 			{$ccs = null;}
 
 		//next insert into db
-		$q = $dbh->prepare("INSERT INTO `cm_messages` (`id`, `thread_id`, `to`, `from`, `ccs`, `subject`, `body`, `assoc_case`, `time_sent`, `read`, `archive`, `starred`) VALUES (NULL, '', :tos, :sender, :ccs, :subject, :body, :assoc_case, CURRENT_TIMESTAMP, :sender_has_read, '', '');");
+		$q = $dbh->prepare("INSERT INTO `cm_messages` (
+            `id`, `thread_id`, `to`, `from`, `ccs`, `subject`, `body`, `assoc_case`, `time_sent`, `read`, `archive`, `starred`) 
+            VALUES (NULL, '', :tos, :sender, :ccs, :subject, :body, :assoc_case, CURRENT_TIMESTAMP, :sender_has_read, '', '');");
 
 		//strip trailing commas, if present
 		if (substr($tos, -1) == ',')
@@ -186,6 +188,7 @@ switch ($action) {
 		$q->execute($data);
 
 		$error = $q->errorInfo();
+
 
 		if (!$error[1])
 		{
@@ -224,8 +227,6 @@ switch ($action) {
                     }
 				}
 		}
-
-
 	break;
 
 	case 'reply':
@@ -483,7 +484,13 @@ switch ($action) {
 if($error[1])
 
 		{
-			$return = array('message' => 'Sorry, there was an error. Please try again.','error' => true);
+
+		    $message = 'Sorry, there was an error. Please try again.';
+		    if(!empty($error[2])){
+		        $message .= "\n<br /><span style='color:red;'>" . $error[2] . "</span> ";
+            }
+
+			$return = array('message' => $message ,'error' => true);
 			echo json_encode($return);
 		}
 

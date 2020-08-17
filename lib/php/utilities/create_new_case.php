@@ -99,7 +99,15 @@ if (!$_SESSION['permissions']['add_cases'] == "1")
 		echo json_encode($response);die;
 	}
 
-$q = $dbh->prepare("INSERT INTO `cm` (`id`, `clinic_id`,`organization`, `date_open`,`opened_by`) VALUES (NULL, ?, 'New Case', CURDATE(),?);");
+$q = $dbh->prepare("INSERT INTO `cm` (`id`, `clinic_id`,`organization`, `date_open`,`opened_by`
+,`notes`
+,`close_notes`
+,`assigned_users`
+) VALUES (NULL, ?, 'New Case', CURDATE(),?
+, ''
+, ''
+, ''
+);");
 
 $q->bindParam(1,$new_case_number);
 
@@ -108,6 +116,9 @@ $q->bindParam(2,$user);
 $q->execute();
 
 $error = $q->errorInfo();
+
+
+
 
 if (!$error[1])
 {

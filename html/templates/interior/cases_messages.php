@@ -26,7 +26,10 @@
 
 	<form id = "new_msg_form">
 
-		<p><label>To:</label>
+		<p><label>Toy:</label>
+
+
+
 
 			<select multiple name = "new_tos[]" data-placeholder = "Choose recipients">
 
@@ -131,7 +134,7 @@ if ($replies === false) //these are not replies to a message
 
 		<div class = "msg_body">
 
-			<p class = "tos">To: <?php echo format_name_list($dbh,$to); ?></p>
+			<p class = "tos">Tox: <?php echo format_name_list($dbh,$to); ?></p>
 
 			<?php if ($ccs){echo "<p class='ccs'>Cc: " . format_name_list($dbh,$ccs) . "</p>";} ?>
 
