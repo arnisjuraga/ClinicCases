@@ -1,0 +1,15 @@
+<div class="csenote ui-corner-all card">
+    <div class="csenote_bar">
+
+
+    </div>
+    <div class="csenote_instance">
+        <p><strong>Case: </strong> <span>{{ clinic_id }}</span></p>
+        <p><strong>Client:</strong> <span>{{ first_name ~ " " ~ last_name }}</span></p>
+        <p>
+            <strong>Date open: </strong> <span class="csenote_date">{{ extract_date(date_open) }}</span>
+        </p>
+    </div>
+</div>
+
+
