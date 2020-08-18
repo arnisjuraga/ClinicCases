@@ -40,6 +40,8 @@ if (isset($_POST['remember'])) {
     $remember = $_POST['remember'];
 }
 
+// pr($password);
+
 
 $user_query = $dbh->prepare("SELECT * FROM cm_users WHERE username = ? AND password = ? LIMIT 1");
 
@@ -52,6 +54,9 @@ $user_query->bindParam(2, $password);
 $user_query->execute();
 
 $r = $user_query->fetch();
+
+
+// prd($user_query->debugDumpParams());
 
 //Do error handling
 

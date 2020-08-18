@@ -124,4 +124,4 @@ if (in_array(strtolower(ini_get('magic_quotes_gpc')), ['1', 'on'])) {
 
 //ini_set("error_reporting", "true");
 //error_reporting(E_ALL|E_STRCT);
-error_reporting(0);
+// error_reporting(0);

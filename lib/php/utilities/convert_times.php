@@ -6,9 +6,17 @@
 //extracts date from a mysql datestamp
 function extract_date($val)
 {
+    // pr($val);
+    //$date = date_parse($val);
+    $date = new DateTime( $val );
 
-    $date = date_parse($val);
-    return $date['month'] . "/" . $date['day'] . "/" . $date['year'];
+    //echo $date->format(DATE_FORMAT) ;
+
+    if(!$date){
+        prd($val);
+    }
+
+    return $date->format(DATE_FORMAT);
 
 }
 
@@ -16,7 +24,7 @@ function extract_date($val)
 function extract_date_time($val)
 {
     $date = date_create($val);
-    return date_format($date, 'F j, Y g:i a');
+    return date_format($date, !defined('DATE_FORMAT_LONG') ? 'F j, Y g:i a' : DATE_FORMAT_LONG);
 }
 
 //extracts date and time from a mysql timestamp, sortable

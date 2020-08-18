@@ -43,7 +43,7 @@
 
             <form>
 
-                <?php foreach ($dta as $d) {
+                <?php foreach ($data as $d) {
                     extract($d); ?>
 
                     <p>
@@ -138,9 +138,8 @@
 
                             <select name="<?php echo $db_name; ?>">
 
-                                <option value="" <?php if ($type == 'new') {
-                                    echo "selected=selected";
-                                } //identify new users?>> ---
+                                <option value="" <?=($type == 'new' ? "selected=selected": '') ?>> ----
+
                                 </option>
 
                                 <?php
@@ -202,11 +201,12 @@
 
         <div class="case_data">
 
-            <?php foreach ($dta as $d) {
+            <?php foreach ($data as $d) {
                 extract($d);
 
-                if ($input_type == 'dual') //special handling for dual inputs
-                { ?>
+                //special handling for dual inputs
+
+                if ($input_type == 'dual') { ?>
 
                     <div class="<?php echo $db_name; ?>_display case_data_display">
 
@@ -216,9 +216,7 @@
                             $duals = unserialize($value);
 
                             foreach ($duals as $v => $type) { ?>
-
                                 <div class="case_data_value"><?php echo $v . " (" . $type . ")"; ?></div>
-
                             <?php } ?>
 
                         <?php } ?>
@@ -232,7 +230,9 @@
 
                         <div class="case_data_value">
                             <?php
+
                             //first check if this is a serialized value
+
                             $items = @unserialize($value);
                             if ($items !== false) {
                                 $val = null;
@@ -241,8 +241,8 @@
                                 }
 
                                 echo htmlspecialchars(substr($val, 0, -2), ENT_QUOTES, 'UTF-8');
-                            } elseif ($input_type === 'date') //then check if it's a date
-                            {
+                            } elseif ($input_type === 'date'){
+                                //then check if it's a date
                                 echo sql_date_to_us_date($value);
                             } else {
                                 echo htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
