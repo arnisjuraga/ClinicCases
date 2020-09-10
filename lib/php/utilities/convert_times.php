@@ -31,7 +31,7 @@ function extract_date_time($val)
 function extract_date_time_sortable($val)
 {
     $date = date_create($val);
-    return date_format($date, 'm/d/Y g:i a');
+    return date_format($date, 'd/m/Y g:i a');
 }
 
 
@@ -40,7 +40,7 @@ function sql_date_to_us_date($date)
 
     if (!empty($date)) {
         $parts = explode('-', $date);
-        $us_date = $parts[1] . "/" . $parts[2] . "/" . $parts[0];
+        $us_date = $parts[2] . "/" . $parts[1] . "/" . $parts[0];
         return $us_date;
     }
 
