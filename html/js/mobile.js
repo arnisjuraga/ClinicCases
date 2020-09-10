@@ -171,7 +171,7 @@ $(document).ready(function () {
         submitHandler: function (form) {
             var thisForm = $('form[name="quick_cn"]');
             var dateVals = $('#cn_date').val().split('-');
-            var dateVal = dateVals[1] + '/' + dateVals[2] + '/' +  dateVals[0];
+            var dateVal = dateVals[2] + '/' + dateVals[1] + '/' +  dateVals[0];
             $('input[name="csenote_date"]').val(dateVal);
             $.post('lib/php/data/cases_casenotes_process.php', thisForm.serialize(), function (data) {
                 var serverResponse = $.parseJSON(data);
